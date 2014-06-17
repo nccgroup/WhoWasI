@@ -1,0 +1,5 @@
+C:\Users\chris\Dropbox\Dev\C#\WhoWasI\WhoWasI\bin\Debug\WhoWasI.exe
+C:\Users\chris\Dropbox\Dev\C#\WhoWasI\WhoWasI\bin\Debug\WhoWasI.pdb
+C:\Users\chris\Dropbox\Dev\C#\WhoWasI\WhoWasI\obj\Debug\WhoWasI.csprojResolveAssemblyReference.cache
+C:\Users\chris\Dropbox\Dev\C#\WhoWasI\WhoWasI\obj\Debug\WhoWasI.exe
+C:\Users\chris\Dropbox\Dev\C#\WhoWasI\WhoWasI\obj\Debug\WhoWasI.pdb
