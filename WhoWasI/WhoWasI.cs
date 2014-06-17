@@ -25,7 +25,7 @@ namespace WhoWasI
         /// </summary>
         /// <param name="processID">Process ID Which You Want To Impersonate</param>
         /// <param name="command">Command You Want To Execute</param>
-        /// <returns>Was Execution Sucessful</returns>
+        /// <returns>Was Execution Successful</returns>
         public static Boolean ImpersonateAndExecute(Int32 processID, String command)
         {
             Boolean _Errored = false;
@@ -59,7 +59,7 @@ namespace WhoWasI
 
             //Instantiate the process handle so we can resolve the account context
             WindowsIdentity _ProcessAccountID = new WindowsIdentity(_TokenHandle);
-            Console.WriteLine("[+] Sucessfully Opened Process ID '{0}' Handle", processID);
+            Console.WriteLine("[+] Successfully Opened Process ID '{0}' Handle", processID);
 
             try
             {
@@ -84,13 +84,13 @@ namespace WhoWasI
                 //Who Was I Again? :D
                 WindowsImpersonationContext _ImpersonationContext = _ProcessAccountID.Impersonate();
 
-                Console.WriteLine("[+] Impersonation Successfull!\n[+] Account Token ID Is '{0}', Impersonated Account Is '{1}'", WindowsIdentity.GetCurrent().Token, WindowsIdentity.GetCurrent().Name);
+                Console.WriteLine("[+] Impersonation Successful!\n[+] Account Token ID Is '{0}', Impersonated Account Is '{1}'", WindowsIdentity.GetCurrent().Token, WindowsIdentity.GetCurrent().Name);
 
                 return ExecuteCommand(_DuplicateTokenHandle, command);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("## ERROR ## - Something Went Wrong Duplicating The Process Token!\nError: '{0}'", ex.Message);
+                Console.WriteLine("## ERROR ## - Something Went Wrong Duplicating The Process Token!\nWin32 Error: '{0}'", ex.Message);
                 _Errored = true;
             }
             finally
@@ -133,7 +133,7 @@ namespace WhoWasI
             //execute a new process with the token
             if (Win32API.CreateProcessWithTokenW(userAccountHandle, Win32API.LOGON_FLAGS.LOGON_NETCREDENTIALS_ONLY, null, command, Win32API.CREATION_FLAGS.CREATE_NEW_CONSOLE, IntPtr.Zero, null, ref _AppStartupInfo, out _ProcessInfo))
             {
-                Console.WriteLine("[+] Sucessfully Executed Command '{0}' With Assigned Process ID '{1}", command, _ProcessInfo.dwProcessId);
+                Console.WriteLine("[+] Successfully Executed Command '{0}' With Process ID '{1}", command, _ProcessInfo.dwProcessId);
                 return true;
             }
 

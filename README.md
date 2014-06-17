@@ -15,14 +15,14 @@ Usage
 -------------
 
 [List All Available Accounts]
-WhoAmI.exe -la
+WhoWasI.exe -la
 
 [Impersonate & Execute Command as Another User]
-usage: WhoAmI.exe {account} {command}
+usage: WhoWasI.exe {account} {command}
 
 The following command will spawn a command shell as the SYSTEM user:
 
-WhoAmI.exe system cmd.exe
+WhoWasI.exe system cmd.exe
 
 Dependencies 
 -------------
