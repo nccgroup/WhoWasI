@@ -4,6 +4,17 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 
+/*
+ * 
+ *      Released as open source by NCC Group Plc - http://www.nccgroup.com/
+ *
+ *      Developed by Chris Thomas, chris dot thomas at nccgroup dot com
+ *
+ *      https://github.com/nccgroup/WhoWasI
+ *
+ *      Released under AGPL see LICENSE for more information
+ */
+
 namespace WhoWasI
 {
     public class WhoWasI
