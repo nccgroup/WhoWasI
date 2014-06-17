@@ -31,6 +31,7 @@ namespace WhoWasI
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static Boolean DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes, SECURITY_IMPERSONATION_LEVEL ImpersonationLevel, TOKEN_TYPE TokenType, out IntPtr phNewToken);
 
+        //http://www.pinvoke.net/default.aspx/Structures/CreateProcessWithTokenW.html
         [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean CreateProcessWithTokenW(IntPtr hToken, LOGON_FLAGS dwLogonFlags, string lpApplicationName, string lpCommandLine, CREATION_FLAGS dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUP_INFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);

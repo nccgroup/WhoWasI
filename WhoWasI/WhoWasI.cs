@@ -20,28 +20,37 @@ namespace WhoWasI
     public class WhoWasI
     {
 
+        /// <summary>
+        /// Impersonate Specified User & Execute A Command
+        /// </summary>
+        /// <param name="processID">Process ID Which You Want To Impersonate</param>
+        /// <param name="command">Command You Want To Execute</param>
+        /// <returns>Was Execution Sucessful</returns>
         public static Boolean ImpersonateAndExecute(Int32 processID, String command)
         {
             Boolean _Errored = false;
             IntPtr _TokenHandle = IntPtr.Zero;
             IntPtr _DuplicateTokenHandle = IntPtr.Zero;
 
-            IntPtr _ProcessID = Process.GetProcessById(processID).Handle;
+            //get the handle to the process
+            IntPtr _ProcessIDHandle = Process.GetProcessById(processID).Handle;
 
             //have we obtained a valid handle?
-            if (_ProcessID == IntPtr.Zero)
+            if (_ProcessIDHandle == IntPtr.Zero)
             {
                    Console.WriteLine("## ERROR ## - Unable To Get Handle For Process ID '{0}', Aborting..", processID);
                 return false;
             }//end of if
 
 
-            if (Win32API.OpenProcessToken(_ProcessID, Win32API.TOKEN_DUPLICATE | Win32API.TOKEN_IMPERSONATE | Win32API.TOKEN_QUERY, out _TokenHandle) == false)
+            //open the process and attempt to obtain the token.
+            if (Win32API.OpenProcessToken(_ProcessIDHandle, Win32API.TOKEN_DUPLICATE | Win32API.TOKEN_IMPERSONATE | Win32API.TOKEN_QUERY, out _TokenHandle) == false)
             {
                 Console.WriteLine("## ERROR ##  - Trying To Open Process ID '{0}' Handle..\nError '{1}'", processID, Marshal.GetLastWin32Error());
                 return false;
             }//end of if           
 
+            //do we have a valid token handle?
             if (_TokenHandle == IntPtr.Zero)
             {
                 Console.WriteLine("## ERROR ## - Opened Token For Process ID '{0}' However Handle Is Invalid, Aborting..", processID);
@@ -102,6 +111,7 @@ namespace WhoWasI
 
         private static Boolean ExecuteCommand(IntPtr userAccountHandle, String command)
         {
+            //general structs we need, would prefer to use NULL but .NET doesnt like it.
             Win32API.PROCESS_INFORMATION _ProcessInfo = new Win32API.PROCESS_INFORMATION();
             Win32API.SECURITY_ATTRIBUTES _ProcesSecurityAttributes = new Win32API.SECURITY_ATTRIBUTES();
             Win32API.SECURITY_ATTRIBUTES _ThreadSecurityAttributes = new Win32API.SECURITY_ATTRIBUTES();
@@ -140,27 +150,33 @@ namespace WhoWasI
                 /// <returns>Process Entry Containing The Process ID</returns>
                 public static ProcessEntry GetProcessIDForAccount(String account)
                 {
+                    //convert the account name to upper to remove variances
                     account = account.ToUpper().Trim();
 
+                    //convert the shorthand version to the proper account names.
                     switch (account)
                     {
                         case "SYSTEM": account = @"NT AUTHORITY\SYSTEM"; break;
                         case "NETWORK SERVICE": account = @"NT AUTHORITY\NETWORK SERVICE"; break;
-                        case "LOCAL SERVICE": account = @"NT AUTHORITY\LOCAL SERVICE"; break;   
-                    }
-
+                        case "LOCAL SERVICE": account = @"NT AUTHORITY\LOCAL SERVICE"; break;
+                    }//end of  switch (account)
+                    
+                    //cycle through a list of all users to see if the specified user is present
                     foreach (KeyValuePair<String, List<ProcessEntry>> _Account in ListProcessAccounts)
                     {
                         //have we found the correct user?
                         if(_Account.Key.Equals(account))
                         {
                             //return the first PID
+                            //there is a potential race condition, should 
+                            //the process terminate before we grab the token the app will bork.
                             return _Account.Value[0];
                         }// if(_Account.Key.Equals(account))
 
 
                     }//end of foreach (KeyValuePair<String, List<Int32>> _Account in ListProcessAccounts)
 
+                    //return a default entry with an invalid PID so we know there is an error
                     return new ProcessEntry
                     {
                         Name = String.Empty,
@@ -179,6 +195,8 @@ namespace WhoWasI
                     {
                         Dictionary<String, List<ProcessEntry>> _ActiveAccounts = new Dictionary<String, List<ProcessEntry>>();
 
+                        //cycle through all processes to obtain a handle where we will attempt to
+                        //enumerate the account.
                         foreach (var _Process in Process.GetProcesses())
                         {
                             IntPtr _ProcessHandle = IntPtr.Zero;
@@ -204,7 +222,7 @@ namespace WhoWasI
                                                                 Name = _Process.ProcessName,
                                                                 PID = _Process.Id
                                                             }
-                                                        );
+                                                        );//end of _ProcessIDs.Add(
                                         }
                                         else
                                         {
@@ -215,7 +233,7 @@ namespace WhoWasI
                                                     Name = _Process.ProcessName,
                                                     PID = _Process.Id
                                                 }
-                                            });
+                                            });//end of  _ActiveAccounts.Add(
                                         } //end of if-else
 
                                     } //end of if (_ProcessHandle != IntPtr.Zero)
@@ -240,16 +258,17 @@ namespace WhoWasI
                     }//end of get
                 }//end of public static Dictionary<String, List<Int32>> ListProcessAccounts
 
-
+                /// <summary>
+                /// Print A List of Logged In Accounts & Amount of Running Processes To Tthe Console
+                /// </summary>
                 public static void PrintActiveAccountsToConsole()
                 {
                     Console.WriteLine(" - Listing Accounts Of Active Processes...");
-
+                                        
                     foreach (KeyValuePair<String, List<ProcessEntry>> _RunningAccount in ListProcessAccounts)
                     {
                         Console.WriteLine("\t[+] {0} - {1} Running Processes", _RunningAccount.Key, _RunningAccount.Value.Count);
                     }//end offoreach (KeyValuePair<String, List<Int32>> _RunningAccount in ListProcessAccounts)
-
 
                 }//end of  public static void PrintActiveAccountsToConsole()
         #endregion
@@ -257,6 +276,9 @@ namespace WhoWasI
 
         #region Utility Methods
 
+                /// <summary>
+                /// Is The Application Running With Admin Privileges
+                /// </summary>
                 public static Boolean IsAdmin
                 {
                     get
@@ -274,6 +296,7 @@ namespace WhoWasI
 
     }//end of class WhoWasI
 
+    //Used to store the process ID and acount name.
     public struct ProcessEntry
     {
         public String Name;

@@ -15,7 +15,7 @@ namespace WhoWasI
 {
     class Program
     {
-        private const String VERSION_NUMBER = "0.1 Alpha";
+        private const String VERSION_NUMBER = "1.0";
 
         static void Main(String[] args)
         {
