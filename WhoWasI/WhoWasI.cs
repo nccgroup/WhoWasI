@@ -44,7 +44,7 @@ namespace WhoWasI
 
 
             //open the process and attempt to obtain the token.
-            if (Win32API.OpenProcessToken(_ProcessIDHandle, Win32API.TOKEN_DUPLICATE | Win32API.TOKEN_IMPERSONATE | Win32API.TOKEN_QUERY, out _TokenHandle) == false)
+            if (Win32API.OpenProcessToken(_ProcessIDHandle, Win32API.TOKEN_ASSIGN_PRIMARY | Win32API.TOKEN_DUPLICATE | Win32API.TOKEN_IMPERSONATE | Win32API.TOKEN_QUERY, out _TokenHandle) == false)
             {
                 Console.WriteLine("## ERROR ##  - Trying To Open Process ID '{0}' Handle..\nError '{1}'", processID, Marshal.GetLastWin32Error());
                 return false;
@@ -56,6 +56,7 @@ namespace WhoWasI
                 Console.WriteLine("## ERROR ## - Opened Token For Process ID '{0}' However Handle Is Invalid, Aborting..", processID);
                 return false;
             }
+
 
             //Instantiate the process handle so we can resolve the account context
             WindowsIdentity _ProcessAccountID = new WindowsIdentity(_TokenHandle);
@@ -271,7 +272,57 @@ namespace WhoWasI
                     }//end offoreach (KeyValuePair<String, List<Int32>> _RunningAccount in ListProcessAccounts)
 
                 }//end of  public static void PrintActiveAccountsToConsole()
+
+                public static void PrintProcessPrivsToConsole(Int32 processID)
+                {
+                    //get the handle to the process
+                    IntPtr _ProcessIDHandle = Process.GetProcessById(processID).Handle;
+                    IntPtr _TokenHandle = IntPtr.Zero;
+
+                    //have we obtained a valid handle?
+                    if (_ProcessIDHandle == IntPtr.Zero)
+                    {
+                        Console.WriteLine("## ERROR ## - Unable To Get Handle For Process ID '{0}', Aborting..", processID);
+                        return;
+                    }//end of if                    
+
+
+                    //open the process and attempt to obtain the token.
+                    if (Win32API.OpenProcessToken(_ProcessIDHandle, Win32API.TOKEN_DUPLICATE | Win32API.TOKEN_IMPERSONATE | Win32API.TOKEN_QUERY, out _TokenHandle) == false)
+                    {
+                        Console.WriteLine("## ERROR ##  - Trying To Open Process ID '{0}' Handle..\nError '{1}'", processID, Marshal.GetLastWin32Error());
+
+                        Win32API.CloseHandle(_ProcessIDHandle);
+                        return;
+                    }//end of if           
+
+                    //do we have a valid token handle?
+                    if (_TokenHandle == IntPtr.Zero)
+                    {
+                        Console.WriteLine("## ERROR ## - Opened Token For Process ID '{0}' However Handle Is Invalid, Aborting..", processID);
+
+                        Win32API.CloseHandle(_ProcessIDHandle);
+                        return;
+                    }
+
+                    //get a list of privs assigned to the process
+                    Win32API.LUID_AND_ATTRIBUTES[] _Privileges = Privilages.GetPrivileges(_TokenHandle);
+
+                    //did we get enough privilages
+                    if (_Privileges.Length == 0) { Console.WriteLine("## ERROR ## - Unable To Get Privilages For Process '{0}' [{1}]", Process.GetProcessById(processID).ProcessName, processID);}
+
+                    Console.WriteLine("[+] Obtained '{0}' Privilages For Process '{1}' [{2}]", _Privileges.Length, Process.GetProcessById(processID).ProcessName, processID);
+
+                    //cycle through each privilage and dump out to screen
+                    foreach (var luidAndAttributes in _Privileges)
+                    {
+                        String _EmptyStringTest = Privilages.GetPrivilegeName(luidAndAttributes.Luid);
+
+                        if (String.IsNullOrEmpty(_EmptyStringTest) == false) { Console.WriteLine("\t [-] {0}", _EmptyStringTest); }                       
+                    }//end of foreach
+                }
         #endregion
+
 
 
         #region Utility Methods

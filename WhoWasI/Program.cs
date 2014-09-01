@@ -1,5 +1,4 @@
 ﻿using System;
-
 /*
  * 
  *      Released as open source by NCC Group Plc - http://www.nccgroup.com/
@@ -15,7 +14,7 @@ namespace WhoWasI
 {
     class Program
     {
-        private const String VERSION_NUMBER = "1.0";
+        private const String VERSION_NUMBER = "1.1";
 
         static void Main(String[] args)
         {
@@ -34,6 +33,8 @@ namespace WhoWasI
                 return;
             }
 
+
+
             //we already have the last two arguments
             for (Int32 i = 0; i < args.Length; i++)
             {
@@ -41,8 +42,24 @@ namespace WhoWasI
                 {
                     case "-la": WhoWasI.PrintActiveAccountsToConsole();                       
                                 return;                        
+                    case "-pp":
+                                Int32 _PID;
+
+                                //try and parse the next argument, this should be a process ID and so numerical
+                                if (!Int32.TryParse(args[i + 1], out _PID))
+                                {
+                                    Console.WriteLine("## ERROR ## - Invalid Process ID '{0}' Specified, Unable To Dump Process Privilages...\n");
+                                    PrintUseage();
+                                    return;
+                                }//end of  if (!UInt32.TryParse(args[i + 1], out _PID))
+
+                                WhoWasI.PrintProcessPrivsToConsole(_PID);
+                                Environment.Exit(0);
+
+                        return;
                 }//end of switch
             }//end of  for (Int32 i = 0; i < args.Length -2; i++)
+
 
             if (args.Length < 2)
             {
@@ -52,6 +69,15 @@ namespace WhoWasI
 
             //We want the penultimate paramiter as the account
             String _InputtedAccount = args[args.Length - 2];
+            
+            
+            Int32 _InputtedProcessID;
+            Boolean _UseProcessIDAsAccountHandle = false;
+
+            //the following checks are used to determine whether a string (account) or number (processID) has been specified
+            if (Int32.TryParse(_InputtedAccount, out _InputtedProcessID)) { _UseProcessIDAsAccountHandle = true; }
+
+
             //Last paramiter is the command to run
             String _CommandToRun = args[args.Length - 1];
 
@@ -69,8 +95,22 @@ namespace WhoWasI
                 return;
             }//end of if (String.IsNullOrEmpty(_CommandToRun))
 
+            ProcessEntry _ProcessIdToUse;
 
-            ProcessEntry _ProcessIdToUse = WhoWasI.GetProcessIDForAccount(_InputtedAccount);
+
+            if (_UseProcessIDAsAccountHandle)
+            {
+                _ProcessIdToUse = new ProcessEntry()
+                {
+                    Name = "ASDF",
+                    PID = _InputtedProcessID
+                };
+            }
+            else
+            {
+                _ProcessIdToUse = WhoWasI.GetProcessIDForAccount(_InputtedAccount);
+            }
+            
             //do we have a valid process?
             if (_ProcessIdToUse.PID == -1)
             {
@@ -95,11 +135,13 @@ namespace WhoWasI
 
         private static void PrintUseage()
         {
-            Console.WriteLine("Useage: WhoAmI.exe [Options] {Run As User} {Command}");
+            Console.WriteLine("Useage: WhoWasI.exe [Options] {Run As User/PID} {Command}");
             Console.WriteLine("Options:");
-            Console.WriteLine("\t-la\t-\tList Available Users\n");
-            Console.WriteLine("Example:");
-            Console.WriteLine("\tWhoAmI.exe system cmd.exe");
+            Console.WriteLine("\t-la\t\t-\tList Available Users");
+            Console.WriteLine("\t-pp <pid>\t-\tList Process Privilages (By PID)");
+            Console.WriteLine("\nExample:");
+            Console.WriteLine("\tWhoWasI.exe system cmd.exe\t (Run With SYSTEM Permissions)");
+            Console.WriteLine("\tWhoWasI.exe 1234 cmd.exe\t (Run With PID 1234 Permissions)");
         }
     }
 }
