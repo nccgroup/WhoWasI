@@ -17,9 +17,11 @@ Usage
 
 WhoWasI.exe -pp <PID>
 
+
 [List All Available Accounts]
 
 WhoWasI.exe -la
+
 
 [Impersonate & Execute Command as Another User]
 
