@@ -13,6 +13,8 @@ Released under AGPL see LICENSE for more information
 
 Usage
 -------------
+[List Process Privileges]
+WhoWasI.exe -pp <PID>
 
 [List All Available Accounts]
 WhoWasI.exe -la
@@ -24,6 +26,12 @@ The following command will spawn a command shell as the SYSTEM user:
 
 WhoWasI.exe system cmd.exe
 
+
 Dependencies 
 -------------
-* .NET (2.0) Framework (Present On All Supported Windows Operating Systems)
+THE SOLUTION WILL COMPILE WITH ALL STOCK VERSIONS OF .NET, NO DEPENDANCIES ARE REQUIRED.
+
+Note: .NET Framework Binaries (.NET 2 is present on all Windows OS’s until Windows 8 / Server 2012 where .NET 4 is present by default).
+
+
+
