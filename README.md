@@ -14,12 +14,15 @@ Released under AGPL see LICENSE for more information
 Usage
 -------------
 [List Process Privileges]
+
 WhoWasI.exe -pp <PID>
 
 [List All Available Accounts]
+
 WhoWasI.exe -la
 
 [Impersonate & Execute Command as Another User]
+
 usage: WhoWasI.exe {account} {command}
 
 The following command will spawn a command shell as the SYSTEM user:
