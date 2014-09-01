@@ -36,7 +36,7 @@ Dependencies
 -------------
 THE SOLUTION WILL COMPILE WITH ALL STOCK VERSIONS OF .NET, NO DEPENDANCIES ARE REQUIRED.
 
-Note: .NET Framework Binaries (.NET 2 is present on all Windows OS’s until Windows 8 / Server 2012 where .NET 4 is present by default).
+Note: .NET Framework Binaries (.NET 2 is present on all Windows OS’s until Windows 8 / Server 2012 where .NET 4 is present by default) are required.
 
 Change Log
 -------------
