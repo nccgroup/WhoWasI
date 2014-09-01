@@ -38,5 +38,15 @@ THE SOLUTION WILL COMPILE WITH ALL STOCK VERSIONS OF .NET, NO DEPENDANCIES ARE R
 
 Note: .NET Framework Binaries (.NET 2 is present on all Windows OS’s until Windows 8 / Server 2012 where .NET 4 is present by default).
 
+Change Log
+-------------
+Version 1.0 - 17th June 2014 
+====================================
+* Initial Release
 
-
+Version 1.1 - 1st Sept 2014
+====================================
+* Added: Ability To Specify Process ID Instead of Account Name
+* Added: The 'SeAssignPrimaryTokenPrivilege' Privilege Is Not Applied When Impersonating
+* Added: Able To List A Processes Privileges
+* Fixed: Wrong Application Name In Usage Menu
