@@ -45,6 +45,6 @@ Version 1.0 - 17th June 2014
 
 Version 1.1 - 1st Sept 2014
 * Added: Ability To Specify Process ID Instead of Account Name
-* Added: The 'SeAssignPrimaryTokenPrivilege' Privilege Is Not Applied When Impersonating
 * Added: Able To List A Processes Privileges
 * Fixed: Wrong Application Name In Usage Menu
+* Fixed: The 'SeAssignPrimaryTokenPrivilege' Privilege Is Not Applied When Impersonating
