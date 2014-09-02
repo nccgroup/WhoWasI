@@ -50,7 +50,7 @@ namespace WhoWasI
                                 {
                                     Console.WriteLine("## ERROR ## - Invalid Process ID '{0}' Specified, Unable To Dump Process Privilages...\n");
                                     PrintUseage();
-                                    return;
+                                    Environment.Exit(0);
                                 }//end of  if (!UInt32.TryParse(args[i + 1], out _PID))
 
                                 WhoWasI.PrintProcessPrivsToConsole(_PID);

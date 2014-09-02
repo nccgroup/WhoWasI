@@ -1,10 +1,14 @@
-﻿Version 1.0 
+﻿Version 1.0  - 17th June 2014
 ====================================
 Initial Release
 
-Version 1.1
+Version 1.1 - 1st September 2014
 ====================================
 Added: Ability To Specify Process ID Instead of Account Name
-Added: The 'SeAssignPrimaryTokenPrivilege' Privilege Is Not Applied When Impersonating
 Added: Able To List A Processes Privileges
 Fixed: Wrong Application Name In Usage Menu
+Fixed: The 'SeAssignPrimaryTokenPrivilege' Privilege Was Not Applied When Impersonating
+
+Version 1.1.1 - 2nd September 2014
+====================================
+Fixed: If non-numerical proccess ID is specified the applicationc does not quit on error
